@@ -45,7 +45,7 @@ export const getBagsInWallet = async (address: string): Promise<Bag[]> => {
     gql`
       query BagsInWallet($address: String!) {
         wallet(id: $address) {
-          bags {
+          bags(first: 500) {
             id
             chest
             foot
@@ -62,8 +62,10 @@ export const getBagsInWallet = async (address: string): Promise<Bag[]> => {
     `,
     { address }
   );
-  wallet.bags = wallet.bags.map(formatBag);
-  return wallet.bags;
+  if (wallet?.bags) {
+    wallet.bags = wallet.bags.map(formatBag);
+    return wallet.bags;
+  } else return [];
 };
 
 export const getRecentTransfersForBag = async (
